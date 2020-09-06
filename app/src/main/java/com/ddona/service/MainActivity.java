@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.ddona.service.model.Laptop;
 import com.ddona.service.service.MusicService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -50,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             startMusicService();
         }
+
+        Laptop.Builder builder = new Laptop.Builder("i10", "128GB", "1000TB", "Main", "1000W");
+        builder.setFan("Max fan");
+        builder.setLed("full led");
+        Laptop laptop = builder.build();
     }
 
     @Override
