@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -19,6 +22,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int STORAGE_PERMISSION = 1000;
     private SeekBar sbTime;
     private Button btnPrevious, btnPlay, btnNext, btnPause;
+    private MusicService musicService;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MusicService.MusicBinder binder = (MusicService.MusicBinder) iBinder;
+            musicService = binder.getMusicService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            musicService = null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +71,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startMusicService() {
+//        Intent intent = new Intent(this, MusicService.class);
+//        startService(intent);
         Intent intent = new Intent(this, MusicService.class);
-        startService(intent);
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
     private void initViews() {
@@ -93,12 +111,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_next:
+                if (musicService != null) {
+                    musicService.getMediaManager().next();
+                }
                 break;
             case R.id.btn_previous:
+                if (musicService != null) {
+                    musicService.getMediaManager().previous();
+                }
                 break;
             case R.id.btn_play:
+                if (musicService != null) {
+                    musicService.getMediaManager().play();
+                }
                 break;
             case R.id.btn_pause:
+                if (musicService != null) {
+                    musicService.getMediaManager().pause();
+                }
                 break;
         }
     }

@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -54,6 +55,16 @@ public class MusicService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new MusicBinder();
+    }
+
+    public class MusicBinder extends Binder {
+        public MusicService getMusicService() {
+            return MusicService.this;
+        }
+    }
+
+    public MediaManager getMediaManager() {
+        return mediaManager;
     }
 }
